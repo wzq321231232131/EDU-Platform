@@ -1,4 +1,6 @@
 <template>
+  <!--dialog需要设置visible属性
+  Dialog 分为两个部分：body和footer，footer需要具名为footer的slot  -->
   <el-dialog :title="title" :visible.sync="dialogFormVisible" @close="handleClose">
     <el-form :model="course" label-position="left" label-width="90px" ref="courseForm">
       <el-container>
@@ -43,6 +45,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
+      <!-- 点取消直接隐藏Dialog -->
       <el-button @click="dialogFormVisible=false">取 消</el-button>
       <el-button type="primary" @click="handleSubmitForm">确 定</el-button>
     </div>
@@ -69,10 +72,13 @@ export default {
       this.avatar = this.$avatarUrl + res.data
       this.course.cover = res.data;
     },
+
+    // 启动函数，设置Dialog标题及可见性
     startInsert: function () {
       this.title = 'Insert Course Information';
       this.dialogFormVisible = true;
     },
+
     handleMaterialsExceed: function (files, fileList) {
       this.$message.warning(`当前限制选择 10 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
     },
@@ -96,13 +102,19 @@ export default {
       this.$refs['courseForm'].resetFields();
     },
     handleSubmitForm: function () {
+      // then()方法是异步执行,就是当.then()前的方法执行完后再执行then()内部的程序，这样就避免了，数据没获取到等的问题
       operate.submitCourseForm(this.course).then(res => {
             if (res.operate) {
               this.$message.success(res.msg);
               this.dialogFormVisible = false;
               this.$parent.getPage();
             } else {
-              this.$message.error(res.msg);
+              // type有值：success/warning/info/error，默认info
+              this.$message({
+                showClose:true,
+                message:res.msg,
+                type:'error'
+              });
             }
           }
       );

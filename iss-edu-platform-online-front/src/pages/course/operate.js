@@ -20,6 +20,7 @@ function getTeachersForSelect() {
 
 function submitCourseForm(data) {
     return ajax({
+        // 调用后端代码
         url: data.id == 0 ? '/course/insertCourse' : '/course/updateCourse',
         method: 'post',
         data

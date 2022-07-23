@@ -1,13 +1,29 @@
 <template>
   <div>
-    <el-row style="width: 100%;margin: auto;height: 40px;">
-      <el-breadcrumb separator="/" style="margin: 20px;">
+    <!-- 导航地址栏 -->
+    <el-row style="width:100%;margin:auto;height:40px;">
+
+      <!-- 简单路径建议使用el-page-header，back指定触发函数，content指定当前页面 -->
+      <!-- <el-page-header @back="goBack" content="课程" style="margin:20px;"></el-page-header> -->
+
+      <!-- 显示当前页面的路径，快速返回之前的任意页面
+      breadcrumb——面包屑组件
+      通过设置 separator-class 可使用相应的 iconfont 作为分隔符，注意这将使 separator 设置失效 -->
+      <el-breadcrumb separator="/" style="margin:20px;">
+        <!-- to	路由跳转对象，同 vue-router 的 to -->
         <el-breadcrumb-item :to="{ path: '/index' }">首页</el-breadcrumb-item>
+        <!-- 当前页面 -->
         <el-breadcrumb-item>课程</el-breadcrumb-item>
       </el-breadcrumb>
     </el-row>
-    <el-row style="width: 99%;margin: auto;height: 50px;" type="flex" align="middle">
+
+    <!-- el-row组件是一行，分为24栏，el-col的span值表示占的栏数 ，
+    type:flex——type	布局模式，可选 flex，现代浏览器下有效，
+    align	flex 布局下的垂直排列方式 可选值top/middle/bottom
+    -->
+    <el-row style="width:99%;margin:auto;height:50px;" type="flex" align="middle">
       <el-col :span="18">
+        <!-- 使用type、plain、round和circle属性来定义 Button 的样式 -->
         <el-button class="btn-tools" plain size="small" icon="el-icon-plus" @click="handleInsert">新增</el-button>
         <el-button class="btn-tools" plain size="small" icon="el-icon-delete" @click="handleDeletes">批量删除</el-button>
       </el-col>
@@ -17,6 +33,7 @@
         </el-input>
       </el-col>
     </el-row>
+
     <el-row style="width: 99%;margin: auto;background-color: #FFFFFF;">
       <el-table ref="CourseTable" :data="tableData" :border="true" size="small">
         <el-table-column type="selection" prop="id" align='center' width="40"/>
@@ -70,6 +87,9 @@ export default {
     this.getPage();
   },
   methods: {
+    goBack(){
+      window.location.href="/index"
+    },
     getPage() {
       operate.getPage(this.pageNum, this.pageSize, this.queryValue).then(res => {
         this.tableData = res.rows;
@@ -107,6 +127,9 @@ export default {
       // this.$refs['CatalogueTree'].openTree(this, row);
       this.$router.push('/index/courses/insertCatalogue/' + row.id + '/' + row.name);
     },
+    /* 新建课程
+    ref 写在标签上时：this.$refs.ipt 获取的是添加了ref="ipt"标签对应的dom元素
+    ref 写在组件上时：this.$refs['component'] 获取到的是添加了ref="component"属性的这个组件 */
     handleInsert: function () {
       this.$refs['CourseForm'].startInsert();
     },
